@@ -1,6 +1,0 @@
-@Electric_HostAddress = http://localhost:5224
-
-GET {{Electric_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

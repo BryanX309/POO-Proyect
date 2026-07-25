@@ -1,3 +1,4 @@
+using Electric.API.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Electric.API.Database
@@ -8,5 +9,8 @@ namespace Electric.API.Database
         {
             
         }
+
+        public DbSet<MeterEntity> Meters { get; set; }
+        public DbSet<BillEntity> Bills { get; set; }
     }
 }
