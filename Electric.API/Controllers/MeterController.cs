@@ -2,6 +2,7 @@ using Electric.API.Dtos.Common;
 using Electric.API.Dtos.Meters;
 using Electric.API.Services.Meters;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Electric.API.Controllers
 {
@@ -11,10 +12,27 @@ namespace Electric.API.Controllers
     {
         private readonly IMeterService _meterService;
 
+        /// <summary>
+        /// Mapea la information del response en un StatusCode del ActionResult 
+        /// </summary>
+        /// <typeparam name="T">Ingrese el valor genérico que va a retornar</typeparam>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        private ActionResult<ResponseDto<T>> ResponseStatus<T>(ResponseDto<T> response)
+        {
+            return StatusCode(response.StatusCode, new ResponseDto<T>
+            {
+                Status = response.Status,
+                Message = response.Message,
+                Data = response.Data
+            });
+        }
+
         public MeterController(IMeterService meterService)
         {
             _meterService = meterService;
         }
+
         [HttpGet]
         public async Task<ActionResult<ResponseDto<List<CreateMeterDto>>>> GetAll()
         {
@@ -41,6 +59,15 @@ namespace Electric.API.Controllers
             };
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ResponseDto<MeterDto>>> GetOneByIdAsync(string id)
+        {
+            var response = await _meterService.GetOneByIdAsync(id);
+
+            return ResponseStatus(response);
+        }
+
+
         [HttpPost]
 
         public async Task<ActionResult<ResponseDto<ResponseMeterDto>>>
@@ -48,12 +75,7 @@ namespace Electric.API.Controllers
         {
             var response = await _meterService.CreateAsync(dto);
 
-            return StatusCode(response.StatusCode, new ResponseDto<ResponseMeterDto>
-            {
-               Status = response.Status,
-               Message = response.Message,
-               Data = response.Data 
-            });
+            return ResponseStatus(response);
         }
 
         // [HttpPost]

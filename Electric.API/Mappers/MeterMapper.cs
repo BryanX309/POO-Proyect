@@ -25,5 +25,18 @@ namespace Electric.API.Mappers
                 CreatedDate = DateTime.Now
             };
         }
+
+        public static MeterDto EntityToOneDto(MeterEntity entity)
+        {
+            return new MeterDto
+            {
+                Id = entity.Id,
+                SupplyKey = entity.SupplyKey,
+                ClientId = entity.ClientId,
+                ConsumptionType = entity.ConsumptionType,
+                Rate = entity.Rate,
+                ComercialSector = entity.ComercialSector
+            };
+        }
     }
 }
