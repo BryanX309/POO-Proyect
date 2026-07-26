@@ -1,4 +1,5 @@
 using Electric.API.Database;
+using Electric.API.Services.Meters;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -14,7 +15,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddControllers();
 
-//builder.Services.AddTransient<INTERFAZ_SERVICIO, SERVICIO>
+builder.Services.AddTransient<IMeterService, MeterService>();
 
 var app = builder.Build();
 

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Electric.API.Migrations
 {
     /// <inheritdoc />
-    public partial class TablesMetersAndBills : Migration
+    public partial class CreateTablesMetersAndBills : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,7 @@ namespace Electric.API.Migrations
                 columns: table => new
                 {
                     id = table.Column<string>(type: "TEXT", nullable: false),
-                    supply_key = table.Column<int>(type: "INTEGER", nullable: false),
+                    supply_key = table.Column<string>(type: "TEXT", nullable: true),
                     client_Id = table.Column<string>(type: "TEXT", nullable: false),
                     consumption_type = table.Column<string>(type: "TEXT", nullable: true),
                     rate = table.Column<string>(type: "TEXT", nullable: true),

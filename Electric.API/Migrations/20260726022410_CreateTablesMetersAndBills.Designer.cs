@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Electric.API.Migrations
 {
     [DbContext(typeof(ElectricDbContext))]
-    [Migration("20260725235143_TablesMetersAndBills")]
-    partial class TablesMetersAndBills
+    [Migration("20260726022410_CreateTablesMetersAndBills")]
+    partial class CreateTablesMetersAndBills
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -125,8 +125,8 @@ namespace Electric.API.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("rate");
 
-                    b.Property<int>("SupplyKey")
-                        .HasColumnType("INTEGER")
+                    b.Property<string>("SupplyKey")
+                        .HasColumnType("TEXT")
                         .HasColumnName("supply_key");
 
                     b.HasKey("Id");

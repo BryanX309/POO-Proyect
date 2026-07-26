@@ -122,8 +122,8 @@ namespace Electric.API.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("rate");
 
-                    b.Property<int>("SupplyKey")
-                        .HasColumnType("INTEGER")
+                    b.Property<string>("SupplyKey")
+                        .HasColumnType("TEXT")
                         .HasColumnName("supply_key");
 
                     b.HasKey("Id");

@@ -8,7 +8,7 @@ namespace Electric.API.Entities
     {
         // - supplyKey (Clave de Suministro)
         [Column("supply_key")]
-        public int SupplyKey { get; set; }
+        public string? SupplyKey { get; set; }
 
         //Lo mas adecuado seria hacer que ClientId sea una llave Foránea con una tabla de Clientes
         // - clientId (Id Cliente)
