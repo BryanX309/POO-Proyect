@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Electric.API.Entities
 {
+    [Table("bills")]
     public class BillEntity : BaseEntity
     {
         // - meterId (Information del Medidor)
