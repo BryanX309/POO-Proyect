@@ -8,7 +8,7 @@ namespace Electric.API.Controllers
 {
     [ApiController]
     [Route("api/meters")]
-    public class MeterController:ControllerBase
+    public class MeterController : ControllerBase
     {
         private readonly IMeterService _meterService;
 
@@ -33,36 +33,25 @@ namespace Electric.API.Controllers
             _meterService = meterService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<ResponseDto<List<CreateMeterDto>>>> GetAll()
-        {
-            List<CreateMeterDto> lista = new List<CreateMeterDto>();
-
-            for (int i = 1; i <= 5; i++)
-            {
-                lista.Add(new CreateMeterDto
-                {
-                   SupplyKey = (1111111*i).ToString(),
-                   ClientId = Guid.NewGuid().ToString(),
-                   ConsumptionType = $"Residencial {i}",
-                   Rate = $"Tarifa {i}",
-                   ComercialSector = "SRC"
-                });
-            }
-
-            return new ResponseDto<List<CreateMeterDto>>
-            {
-                StatusCode = 400,
-                Status = true,
-                Message = "Generado",
-                Data = lista
-            };
-        }
-
         [HttpGet("{id}")]
         public async Task<ActionResult<ResponseDto<MeterDto>>> GetOneByIdAsync(string id)
         {
             var response = await _meterService.GetOneByIdAsync(id);
+
+            return ResponseStatus(response);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<ResponseDto<PageDto<List<MeterDto>>>>> GetPagesAsync
+        (
+            string supplyKey = "", //Búsquedas directas de la Clave de Suministro 
+            string clientId = "", //Búsquedas de Contadores del Mismo Cliente
+            string comercialSector = "", //Búsquedas dentro del mismo Sector Comercial
+            string searchTerm = "", //Búsquedas de un termino en cualquier campo
+            int page = 1,
+            int pageSize = 10)
+        {
+            var response = await _meterService.GetPagesAsync(supplyKey, clientId, comercialSector, searchTerm, page, pageSize);
 
             return ResponseStatus(response);
         }

@@ -35,8 +35,23 @@ namespace Electric.API.Mappers
                 ClientId = entity.ClientId,
                 ConsumptionType = entity.ConsumptionType,
                 Rate = entity.Rate,
-                ComercialSector = entity.ComercialSector
+                ComercialSector = entity.ComercialSector,
+                IsActive = entity.IsActive
             };
+        }
+
+        public static List<MeterDto> ListEntityToListDto(List<MeterEntity> entities)
+        {
+            return entities.Select(meter => new MeterDto
+            {
+                Id = meter.Id,
+                SupplyKey = meter.SupplyKey,
+                ClientId = meter.ClientId,
+                ConsumptionType = meter.ConsumptionType,
+                Rate = meter.Rate,
+                ComercialSector = meter.ComercialSector,
+                IsActive = meter.IsActive
+            }).ToList();
         }
     }
 }
