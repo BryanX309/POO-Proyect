@@ -135,21 +135,42 @@ namespace Electric.API.Services.Meters
 
         public async Task<ResponseDto<ResponseMeterDto>> EditAsync(string id, EditMeterDto dto)
         {
-            /*var meterEntity = _context.Meters.FirstOrDefaultAsync(c => c.Id == id);
+            var meterEntity = await _context.Meters.FirstOrDefaultAsync(c => c.Id == id);
 
             if(meterEntity is null)
             {
                 ResponseHelper.NotFound<ResponseMeterDto>("Registro no Encontrado");
             }
 
-            var meterEntityUpdate = */
+            var meterEntityUpdate = MeterMapper.EditDtoToEntity(dto, meterEntity);
 
-            throw new NotImplementedException();
+            _context.Meters.Update(meterEntityUpdate);
+
+            await _context.SaveChangesAsync();
+
+            return ResponseHelper.OK<ResponseMeterDto>("Registro Modificado Correctamente", new ResponseMeterDto
+            {
+                Id = id
+            });
         }
 
         public async Task<ResponseDto<ResponseMeterDto>> DeleteAsync(string id)
         {
-            throw new NotImplementedException();
+            var meterEntity = await _context.Meters.FirstOrDefaultAsync(c => c.Id == id);
+
+            if(meterEntity is null)
+            {
+                ResponseHelper.NotFound<ResponseMeterDto>("Registro no Encontrado");
+            }
+
+            _context.Meters.Remove(meterEntity);
+
+            await _context.SaveChangesAsync();
+
+            return ResponseHelper.OK<ResponseMeterDto>("Registro Eliminado Correctamente", new ResponseMeterDto
+            {
+                Id = id
+            });
         }
     }
 }

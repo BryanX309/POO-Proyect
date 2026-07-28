@@ -53,5 +53,19 @@ namespace Electric.API.Mappers
                 IsActive = meter.IsActive
             }).ToList();
         }
+
+        public static MeterEntity EditDtoToEntity(EditMeterDto dto, MeterEntity entity)
+        {
+            entity.SupplyKey = dto.SupplyKey;
+            entity.ClientId = dto.ClientId;
+            entity.ConsumptionType = dto.ConsumptionType;
+            entity.Rate = dto.Rate;
+            entity.ComercialSector = dto.ComercialSector;
+            entity.IsActive = dto.IsActive;
+            entity.ModifiedById = "f51f7b25-0b93-46ce-be29-ca1db4762b77";
+            entity.ModifiedDate = DateTime.Now;
+
+            return entity;
+        }
     }
 }

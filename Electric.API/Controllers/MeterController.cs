@@ -67,20 +67,22 @@ namespace Electric.API.Controllers
             return ResponseStatus(response);
         }
 
-        // [HttpPost]
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ResponseDto<ResponseMeterDto>>>
+        Edit(string id, [FromBody] EditMeterDto dto)
+        {
+            var response = await _meterService.EditAsync(id, dto);
 
-        // public async Task<ActionResult<ResponseDto<ResponseCategoryDto>>>
+            return ResponseStatus(response);
+        }
 
-        // Post([FromBody] CreateCategoryDto dto)
-        // {
-        //     var response = await _categoryService.CreateAsync(dto);
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ResponseDto<ResponseMeterDto>>>
+        Delete(string id)
+        {
+            var response = await _meterService.DeleteAsync(id);
 
-        //     return StatusCode(response.StatusCode, new ResponseDto<ResponseCategoryDto>
-        //     {
-        //        Status = response.Status,
-        //        Message = response.Message,
-        //        Data = response.Data
-        //     });
-        // }
+            return ResponseStatus(response);
+        }
     }
 }
