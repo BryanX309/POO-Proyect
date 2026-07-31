@@ -54,5 +54,13 @@ namespace Electric.API.Controllers
 
             return ResponseStatus(response);
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ResponseDto<ResponseBillDto>>> PayBill(string id,[FromBody] EditBillDto dto)
+        {
+            var response = await _billService.EditAsync(id, dto);
+            
+            return ResponseStatus(response);
+        }
     }
 }

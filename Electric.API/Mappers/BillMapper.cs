@@ -57,5 +57,17 @@ namespace Electric.API.Mappers
 
             return BillsList;
         }
+
+        public static BillEntity EditDtoToEntity(EditBillDto dto, BillEntity entity)
+        {
+            if(entity.Paid != dto.Paid)
+            {
+                entity.Paid = dto.Paid;
+                entity.ModifiedById = "f51f7b25-0b93-46ce-be29-ca1db4762b77";
+                entity.ModifiedDate = DateTime.Now.Date;
+            }
+
+            return entity;
+        }
     }
 }

@@ -133,12 +133,12 @@ namespace Electric.API.Services.Bills
             IQueryable<MeterEntity> meterQuery = _context.Meters;
 
             //Filtrando por Termino de Búsqueda
-            if (!string.IsNullOrEmpty(searchTerm))
+            /*if (!string.IsNullOrEmpty(searchTerm))
             {
-                /*billQuery = billQuery
-                    .Where(c => (c is not null)
-                    .ToLower().Contains(searchTerm.ToLower()));*/
-            }
+                billQuery = billQuery
+                    .Where(c => (c.)
+                    .ToLower().Contains(searchTerm.ToLower()));
+            }*/
 
             if (!string.IsNullOrEmpty(ClientId))
             {
@@ -148,6 +148,11 @@ namespace Electric.API.Services.Bills
                         .Select(m => m.Id)
                         .Contains(b.MeterId)
                 );
+            }
+
+            if (!string.IsNullOrEmpty(MeterId))
+            {
+                billQuery = billQuery.Where(b => b.MeterId == MeterId);
             }
 
             int totalRows = await billQuery.CountAsync();
@@ -179,9 +184,26 @@ namespace Electric.API.Services.Bills
                 });
         }
 
-        public Task<ResponseDto<ResponseBillDto>> EditAsync(string id, EditBillDto dto)
+        public async Task<ResponseDto<ResponseBillDto>> EditAsync(string id, EditBillDto dto)
         {
-            throw new NotImplementedException();
+            var billEntity = await _context.Bills.FirstOrDefaultAsync(b => b.Id == id);
+
+            if(billEntity is null)
+                return ResponseHelper.NotFound<ResponseBillDto>("Factura No Encontrada");
+
+            if(billEntity.Paid == dto.Paid)
+                return ResponseHelper.BadRequest<ResponseBillDto>("El Estado de Pagado no modifica el registro actual");
+
+            var billEntityUpdate = BillMapper.EditDtoToEntity(dto,billEntity);
+
+            _context.Update(billEntityUpdate);
+
+            await _context.SaveChangesAsync();
+
+            return ResponseHelper.OK<ResponseBillDto>("Factura Pagada Correctamente", new ResponseBillDto
+            {
+                Id = id
+            });
         }
 
         public Task<ResponseDto<ResponseBillDto>> DeleteAsync(string id)
