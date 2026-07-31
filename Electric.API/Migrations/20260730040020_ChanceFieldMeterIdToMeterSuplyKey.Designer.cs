@@ -3,6 +3,7 @@ using System;
 using Electric.API.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Electric.API.Migrations
 {
     [DbContext(typeof(ElectricDbContext))]
-    partial class ElectricDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260730040020_ChanceFieldMeterIdToMeterSuplyKey")]
+    partial class ChanceFieldMeterIdToMeterSuplyKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.10");
@@ -43,10 +46,10 @@ namespace Electric.API.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("expiration_date");
 
-                    b.Property<string>("MeterId")
+                    b.Property<string>("MeterSupplyKey")
                         .IsRequired()
                         .HasColumnType("TEXT")
-                        .HasColumnName("meter_id");
+                        .HasColumnName("meter_supply_Key");
 
                     b.Property<string>("ModifiedById")
                         .HasColumnType("TEXT")
@@ -74,7 +77,7 @@ namespace Electric.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MeterId");
+                    b.HasIndex("MeterSupplyKey");
 
                     b.ToTable("bills");
                 });
@@ -135,7 +138,7 @@ namespace Electric.API.Migrations
                 {
                     b.HasOne("Electric.API.Entities.MeterEntity", "Meter")
                         .WithMany("Bills")
-                        .HasForeignKey("MeterId")
+                        .HasForeignKey("MeterSupplyKey")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

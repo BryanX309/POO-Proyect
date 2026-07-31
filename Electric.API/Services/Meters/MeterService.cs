@@ -79,7 +79,7 @@ namespace Electric.API.Services.Meters
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 meterQuery = meterQuery
-                    .Where(c => (c.SupplyKey +" "+ c.ClientId +" "+ c.ComercialSector +" "+ c.ConsumptionType +" "+c.Rate)
+                    .Where(c => (c.SupplyKey +" "+ c.ClientId +" "+ c.ComercialSector +" "+ c.ConsumptionType)
                     .ToLower().Contains(searchTerm.ToLower()));
             }
 
@@ -139,7 +139,7 @@ namespace Electric.API.Services.Meters
 
             if(meterEntity is null)
             {
-                ResponseHelper.NotFound<ResponseMeterDto>("Registro no Encontrado");
+                return ResponseHelper.NotFound<ResponseMeterDto>("Registro no Encontrado");
             }
 
             var meterEntityUpdate = MeterMapper.EditDtoToEntity(dto, meterEntity);
@@ -160,7 +160,7 @@ namespace Electric.API.Services.Meters
 
             if(meterEntity is null)
             {
-                ResponseHelper.NotFound<ResponseMeterDto>("Registro no Encontrado");
+                return ResponseHelper.NotFound<ResponseMeterDto>("Registro no Encontrado");
             }
 
             _context.Meters.Remove(meterEntity);

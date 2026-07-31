@@ -6,7 +6,7 @@ namespace Electric.API.Dtos.Meters
         public string? SupplyKey { get; set; }
         public string? ClientId { get; set; }
         public string? ConsumptionType { get; set; }
-        public string? Rate { get; set; }
+        public decimal Rate { get; set; }
         public string? ComercialSector { get; set; }
         public bool IsActive { get; set; } = true;
     }

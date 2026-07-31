@@ -22,7 +22,7 @@ namespace Electric.API.Entities
 
         // - rate (Tarifa)
         [Column("rate")]
-        public string? Rate { get; set; }
+        public decimal Rate { get; set; }
 
         // - comercialSector (Sector Comercial)
         [Column("comercial_sector")]

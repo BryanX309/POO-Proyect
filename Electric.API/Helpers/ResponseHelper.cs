@@ -5,6 +5,9 @@ namespace Electric.API.Helpers
 {
     public class ResponseHelper
     {
+        /// <summary>
+        /// Devuelve un ResponseDto<T> cpm HttpStatusCode.Created
+        /// </summary>
         public static ResponseDto<T> Created<T>(
             string message,
             T data
@@ -19,6 +22,9 @@ namespace Electric.API.Helpers
             };
         }
 
+        /// <summary>
+        /// Devuelve un ResponseDto<T> cpm HttpStatusCode.OK
+        /// </summary>
         public static ResponseDto<T> OK<T>(
             string message,
             T data
@@ -33,6 +39,9 @@ namespace Electric.API.Helpers
             };
         }
 
+        /// <summary>
+        /// Devuelve un ResponseDto<T> cpm HttpStatusCode.BadRequest
+        /// </summary>
         public static ResponseDto<T> BadRequest<T>(
             string message
         )
@@ -45,6 +54,9 @@ namespace Electric.API.Helpers
             };
         }
 
+        /// <summary>
+        /// Devuelve un ResponseDto<T> cpm HttpStatusCode.NotFound
+        /// </summary>
         public static ResponseDto<T> NotFound<T>(
             string message
         )

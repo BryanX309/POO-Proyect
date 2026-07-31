@@ -16,9 +16,9 @@ namespace Electric.API.Dtos.Meters
         [Required(ErrorMessage = "El tipo de consumo es Requerido")]
         public string? ConsumptionType { get; set; }
 
-        [StringLength(20, ErrorMessage = "La Tarifa no puede tener mas de 20 caracteres")]
+        [Range(0.01, 999999.99, ErrorMessage = "La Tarifa debe ser mayor que cero")]
         [Required(ErrorMessage = "La Tarifa es Requerida")]
-        public string? Rate { get; set; }
+        public decimal Rate { get; set; }
 
         [StringLength(20, ErrorMessage = "El Sector Comercial no puede tener mas de 20 caracteres")]
         [Required(ErrorMessage = "El Sector Comercial es Requerido")]

@@ -1,3 +1,4 @@
+using Electric.API.Controllers.Helpers;
 using Electric.API.Dtos.Common;
 using Electric.API.Dtos.Meters;
 using Electric.API.Services.Meters;
@@ -8,25 +9,9 @@ namespace Electric.API.Controllers
 {
     [ApiController]
     [Route("api/meters")]
-    public class MeterController : ControllerBase
+    public class MeterController : CustomBaseController
     {
         private readonly IMeterService _meterService;
-
-        /// <summary>
-        /// Mapea la information del response en un StatusCode del ActionResult 
-        /// </summary>
-        /// <typeparam name="T">Ingrese el valor genérico que va a retornar</typeparam>
-        /// <param name="response"></param>
-        /// <returns></returns>
-        private ActionResult<ResponseDto<T>> ResponseStatus<T>(ResponseDto<T> response)
-        {
-            return StatusCode(response.StatusCode, new ResponseDto<T>
-            {
-                Status = response.Status,
-                Message = response.Message,
-                Data = response.Data
-            });
-        }
 
         public MeterController(IMeterService meterService)
         {
@@ -38,7 +23,7 @@ namespace Electric.API.Controllers
         {
             var response = await _meterService.GetOneByIdAsync(id);
 
-            return ResponseStatus(response);
+            return ResponseStatus<MeterDto>(response);
         }
 
         [HttpGet]
