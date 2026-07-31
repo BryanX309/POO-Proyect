@@ -116,9 +116,67 @@ namespace Electric.API.Services.Bills
             return ResponseHelper.OK<ShowBillDto>("Factura Encontrada", BillMapper.BillInfoToDto(Bill, MeterInfo));
         }
 
-        public Task<ResponseDto<PageDto<List<ShowBillDto>>>> GetPagesAsync(string searchTerm = "", int page = 1, int pageSize = 10)
+        public async Task<ResponseDto<PageDto<List<ShowBillDto>>>> GetPagesAsync(
+            string MeterId = "",
+            string ClientId = "",
+            string searchTerm = "",
+            int page = 1,
+            int pageSize = 10)
         {
-            throw new NotImplementedException();
+            page = Math.Abs(page); //Asegura que la pagina sea positiva (-2) -> 2
+            pageSize = Math.Abs(pageSize);
+
+            pageSize = pageSize <= 0 ? PAGE_SIZE : pageSize;
+            pageSize = pageSize > PAGE_SIZE_LIMIT ? PAGE_SIZE_LIMIT : pageSize;
+
+            IQueryable<BillEntity> billQuery = _context.Bills;
+            IQueryable<MeterEntity> meterQuery = _context.Meters;
+
+            //Filtrando por Termino de Búsqueda
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                /*billQuery = billQuery
+                    .Where(c => (c is not null)
+                    .ToLower().Contains(searchTerm.ToLower()));*/
+            }
+
+            if (!string.IsNullOrEmpty(ClientId))
+            {
+                billQuery = billQuery.Where(b => 
+                    meterQuery
+                        .Where(m => m.ClientId == ClientId)
+                        .Select(m => m.Id)
+                        .Contains(b.MeterId)
+                );
+            }
+
+            int totalRows = await billQuery.CountAsync();
+            int totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+
+            page = page > totalPages ? 1 : page;
+
+            int startIndex = (page - 1) * pageSize;
+
+            var billsEntity = await billQuery
+                .OrderByDescending(c => c.CurrentReadingDate)
+                .Skip(startIndex)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var metersEntity = await meterQuery.ToListAsync();            
+
+            return ResponseHelper.OK<PageDto<List<ShowBillDto>>>(
+                totalRows > 0 ? "Registros Encontrados" : "Ninguna Coincidencia Encontrada",
+                new PageDto<List<ShowBillDto>>
+                {
+                    CurrentPage = page == 0 ? 1 : page,
+                    PageSize = pageSize,
+                    TotalItems = totalRows,
+                    TotalPages = totalPages,
+                    HasNextPage = page < totalPages,
+                    HasPreviousPage = page > 1,
+                    Items = BillMapper.ListEntityToListDto(billsEntity, metersEntity)
+                });
         }
 
         public Task<ResponseDto<ResponseBillDto>> EditAsync(string id, EditBillDto dto)

@@ -29,5 +29,33 @@ namespace Electric.API.Mappers
                 TotalAmount = bill.TotalAmount
             };
         }
+
+        public static List<ShowBillDto> ListEntityToListDto
+        (List<BillEntity> bills, List<MeterEntity> meters)
+        {
+            List<ShowBillDto> BillsList = bills.Select(bill => new ShowBillDto
+            {
+                Id = bill.Id,
+                MeterId = bill.MeterId,
+                ExpirationDate = bill.ExpirationDate.Date,
+                PreviousReading = bill.PreviousReading,
+                CurrentReading = bill.CurrentReading,
+                PreviousReadingDate = bill.PreviousReadingDate.Date,
+                CurrentReadingDate = bill.CurrentReadingDate.Date,
+                Consumption = bill.CurrentReading - bill.PreviousReading,
+                Paid = bill.Paid,
+                TotalAmount = bill.TotalAmount
+            }).ToList();
+
+            foreach (var bill in BillsList)
+            {
+                var MeterInfo = meters.FirstOrDefault(m => m.Id == bill.MeterId);
+
+                if(MeterInfo is not null)
+                    bill.MeterInfo = MeterMapper.EntityToOneDto(MeterInfo);
+            }
+
+            return BillsList;
+        }
     }
 }

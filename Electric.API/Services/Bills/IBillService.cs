@@ -8,7 +8,9 @@ namespace Electric.API.Services.Bills
         Task<ResponseDto<ResponseBillDto>> CreateAsync(CreateBillDto dto);
         Task<ResponseDto<ShowBillDto>> GetOneByIdAsync(string id);
         Task<ResponseDto<PageDto<List<ShowBillDto>>>> GetPagesAsync(
-            string searchTerm = "", //Búsquedas de un termino en cualquier campo
+            string MeterId = "",
+            string ClientId = "",
+            string searchTerm = "",
             int page = 1,
             int pageSize = 10);
         Task<ResponseDto<ResponseBillDto>> EditAsync(string id, EditBillDto dto);

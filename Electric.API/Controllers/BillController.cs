@@ -34,5 +34,25 @@ namespace Electric.API.Controllers
 
             return ResponseStatus(response);
         }
+
+        [HttpGet]
+        public async Task<ActionResult<ResponseDto<PageDto<List<ShowBillDto>>>>> GetPagesAsync(
+            string MeterId = "",
+            string ClientId = "",
+            string searchTerm = "",
+            int page = 1,
+            int pageSize = 10)
+        {
+            var response = await _billService.GetPagesAsync
+            (
+            MeterId,
+            ClientId,
+            searchTerm,
+            page,
+            pageSize
+            );
+
+            return ResponseStatus(response);
+        }
     }
 }

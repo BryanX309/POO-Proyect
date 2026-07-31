@@ -104,8 +104,6 @@ namespace Electric.API.Services.Meters
                     .Where(c => c.ComercialSector == comercialSector);
             }
 
-
-
             int totalRows = await meterQuery.CountAsync();
             int totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
 
