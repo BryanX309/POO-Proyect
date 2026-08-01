@@ -68,5 +68,20 @@ namespace Electric.API.Helpers
                 Message = message
             };
         }
+
+        /// <summary>
+        /// Devuelve un ResponseDto<T> cpm INTERNAL_SERVER_ERROR
+        /// </summary>
+        public static ResponseDto<T> Internal_Server_Error<T>(
+            string message
+        )
+        {
+            return new ResponseDto<T>
+            {
+                StatusCode = HttpStatusCode.INTERNAL_SERVER_ERROR,
+                Status = false,
+                Message = message
+            };
+        }
     }
 }

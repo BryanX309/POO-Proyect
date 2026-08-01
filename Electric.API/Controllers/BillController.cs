@@ -58,7 +58,15 @@ namespace Electric.API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<ResponseDto<ResponseBillDto>>> PayBill(string id,[FromBody] EditBillDto dto)
         {
-            var response = await _billService.EditAsync(id, dto);
+            var response = await _billService.PaidAsync(id, dto);
+            
+            return ResponseStatus(response);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ResponseDto<ResponseBillDto>>> Delete(string id)
+        {
+            var response = await _billService.DeleteAsync(id);
             
             return ResponseStatus(response);
         }

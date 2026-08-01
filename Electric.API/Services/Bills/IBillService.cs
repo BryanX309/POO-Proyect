@@ -13,7 +13,7 @@ namespace Electric.API.Services.Bills
             string searchTerm = "",
             int page = 1,
             int pageSize = 10);
-        Task<ResponseDto<ResponseBillDto>> EditAsync(string id, EditBillDto dto);
+        Task<ResponseDto<ResponseBillDto>> PaidAsync(string id, EditBillDto dto);
         Task<ResponseDto<ResponseBillDto>> DeleteAsync(string id);
     }
 }

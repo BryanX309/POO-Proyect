@@ -23,6 +23,19 @@ namespace Electric.API.Services.Meters
             PAGE_SIZE_LIMIT = configuration.GetValue<int>("PageSizeLimit");
         }
 
+        private async Task<ResponseDto<T>?> TrySaveChangesAsync<T>()
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+                return null;
+            }
+            catch (DbUpdateException)
+            {
+                return ResponseHelper.Internal_Server_Error<T>("No se pudo guardar la información.");
+            }
+        }
+
         //Create Meter
         public async Task<ResponseDto<ResponseMeterDto>> CreateAsync(CreateMeterDto dto)
         {
@@ -38,7 +51,10 @@ namespace Electric.API.Services.Meters
 
             _context.Meters.Add(meter);
 
-            await _context.SaveChangesAsync();
+            var error = await TrySaveChangesAsync<ResponseMeterDto>();
+
+            if(error != null)
+                return error;
 
             return ResponseHelper.Created<ResponseMeterDto>("Registro Ingresado Correctamente",
             new ResponseMeterDto
@@ -79,7 +95,7 @@ namespace Electric.API.Services.Meters
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 meterQuery = meterQuery
-                    .Where(c => (c.SupplyKey +" "+ c.ClientId +" "+ c.ComercialSector +" "+ c.ConsumptionType)
+                    .Where(c => (c.SupplyKey + " " + c.ClientId + " " + c.ComercialSector + " " + c.ConsumptionType)
                     .ToLower().Contains(searchTerm.ToLower()));
             }
 
@@ -135,7 +151,7 @@ namespace Electric.API.Services.Meters
         {
             var meterEntity = await _context.Meters.FirstOrDefaultAsync(c => c.Id == id);
 
-            if(meterEntity is null)
+            if (meterEntity is null)
             {
                 return ResponseHelper.NotFound<ResponseMeterDto>("Registro no Encontrado");
             }
@@ -144,7 +160,10 @@ namespace Electric.API.Services.Meters
 
             _context.Meters.Update(meterEntityUpdate);
 
-            await _context.SaveChangesAsync();
+            var error = await TrySaveChangesAsync<ResponseMeterDto>();
+
+            if(error != null)
+                return error;
 
             return ResponseHelper.OK<ResponseMeterDto>("Registro Modificado Correctamente", new ResponseMeterDto
             {
@@ -156,14 +175,17 @@ namespace Electric.API.Services.Meters
         {
             var meterEntity = await _context.Meters.FirstOrDefaultAsync(c => c.Id == id);
 
-            if(meterEntity is null)
+            if (meterEntity is null)
             {
                 return ResponseHelper.NotFound<ResponseMeterDto>("Registro no Encontrado");
             }
 
             _context.Meters.Remove(meterEntity);
 
-            await _context.SaveChangesAsync();
+            var error = await TrySaveChangesAsync<ResponseMeterDto>();
+
+            if(error != null)
+                return error;
 
             return ResponseHelper.OK<ResponseMeterDto>("Registro Eliminado Correctamente", new ResponseMeterDto
             {

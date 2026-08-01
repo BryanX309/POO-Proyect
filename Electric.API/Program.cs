@@ -1,4 +1,5 @@
 using Electric.API.Database;
+using Electric.API.Middlewares;
 using Electric.API.Services.Bills;
 using Electric.API.Services.Meters;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapControllers();
 

@@ -14,6 +14,8 @@ namespace Electric.API.Services.Bills
         private readonly int PAGE_SIZE;
         private readonly int PAGE_SIZE_LIMIT;
 
+        private DateTime now = DateTime.Now;
+
         public BillService(ElectricDbContext context, IConfiguration configuration)
         {
             _context = context;
@@ -21,26 +23,21 @@ namespace Electric.API.Services.Bills
             PAGE_SIZE_LIMIT = configuration.GetValue<int>("PageSizeLimit");
         }
 
-        private string ValidateBillInfo(CreateBillDto dto, BillEntity oldBill)
+        private async Task<ResponseDto<T>?> TrySaveChangesAsync<T>()
         {
-            if (oldBill.CurrentReadingDate == DateTime.Now)
+            try
             {
-                return "ya hay una factura emitida del dia de hoy";
+                await _context.SaveChangesAsync();
+                return null;
             }
-
-            if (dto.CurrentReading <= oldBill.CurrentReading)
+            catch (DbUpdateException)
             {
-                return "La Lectura Actual debe ser mayor que la Ultima Lectura";
+                return ResponseHelper.Internal_Server_Error<T>("No se pudo guardar la información.");
             }
-
-            return "";
         }
-
         public async Task<ResponseDto<ResponseBillDto>> CreateAsync(CreateBillDto dto)
         {
             int prevReading = 0;
-
-            Console.WriteLine(dto);
 
             var meter = await _context.Meters.FirstOrDefaultAsync(c => c.Id == dto.MeterId);
 
@@ -55,12 +52,12 @@ namespace Electric.API.Services.Bills
 
             if (oldBill is not null)
             {
-                if (oldBill.CurrentReadingDate.Date == DateTime.Now.Date)
+                if (oldBill.CurrentReadingDate.Date == now.Date)
                     return ResponseHelper.BadRequest<ResponseBillDto>("Ya hay una factura emitida del dia de hoy");
 
-                /*if (dto.CurrentReading <= oldBill.CurrentReading)
+                if (dto.CurrentReading < oldBill.CurrentReading)
                     return ResponseHelper.BadRequest<ResponseBillDto>("La Lectura Actual debe ser mayor que la Ultima Lectura Registrada");
-                    */
+                
                 prevReading = oldBill.CurrentReading;
             }
 
@@ -70,15 +67,15 @@ namespace Electric.API.Services.Bills
                 MeterId = dto.MeterId,
 
                 CurrentReading = dto.CurrentReading,
-                CurrentReadingDate = DateTime.Now,
-                ExpirationDate = DateTime.Now.AddDays(28),
+                CurrentReadingDate = now,
+                ExpirationDate = now.AddDays(28),
 
                 TotalAmount = (dto.CurrentReading - prevReading) * meter.Rate,
 
                 Paid = false,
 
                 CreatedById = "f51f7b25-0b93-46ce-be29-ca1db4762b77",
-                CreatedDate = DateTime.Now
+                CreatedDate = now
             };
 
             if (oldBill is not null)
@@ -89,7 +86,10 @@ namespace Electric.API.Services.Bills
 
             _context.Bills.Add(newBill);
 
-            await _context.SaveChangesAsync();
+            var error = await TrySaveChangesAsync<ResponseBillDto>();
+
+            if(error != null)
+                return error;
 
             return ResponseHelper.OK<ResponseBillDto>("Factura Emitida Correctamente", new ResponseBillDto
             {
@@ -184,7 +184,7 @@ namespace Electric.API.Services.Bills
                 });
         }
 
-        public async Task<ResponseDto<ResponseBillDto>> EditAsync(string id, EditBillDto dto)
+        public async Task<ResponseDto<ResponseBillDto>> PaidAsync(string id, EditBillDto dto)
         {
             var billEntity = await _context.Bills.FirstOrDefaultAsync(b => b.Id == id);
 
@@ -198,7 +198,10 @@ namespace Electric.API.Services.Bills
 
             _context.Update(billEntityUpdate);
 
-            await _context.SaveChangesAsync();
+            var error = await TrySaveChangesAsync<ResponseBillDto>();
+
+            if(error != null)
+                return error;
 
             return ResponseHelper.OK<ResponseBillDto>("Factura Pagada Correctamente", new ResponseBillDto
             {
@@ -206,11 +209,24 @@ namespace Electric.API.Services.Bills
             });
         }
 
-        public Task<ResponseDto<ResponseBillDto>> DeleteAsync(string id)
+        public async Task<ResponseDto<ResponseBillDto>> DeleteAsync(string id)
         {
-            throw new NotImplementedException();
+            var billEntity = await _context.Bills.FirstOrDefaultAsync(b => b.Id == id);
+
+            if(billEntity is null)
+                return ResponseHelper.NotFound<ResponseBillDto>("Factura No Encontrada");
+
+            _context.Bills.Remove(billEntity);
+
+            var error = await TrySaveChangesAsync<ResponseBillDto>();
+
+            if(error != null)
+                return error;
+
+            return ResponseHelper.OK<ResponseBillDto>("Factura Eliminada Correctamente", new ResponseBillDto
+            {
+                Id = id
+            });
         }
-
-
     }
 }
