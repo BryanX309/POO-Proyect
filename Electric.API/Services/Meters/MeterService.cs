@@ -174,10 +174,16 @@ namespace Electric.API.Services.Meters
         public async Task<ResponseDto<ResponseMeterDto>> DeleteAsync(string id)
         {
             var meterEntity = await _context.Meters.FirstOrDefaultAsync(c => c.Id == id);
+            var bills = await _context.Bills.FirstOrDefaultAsync(b => b.MeterId == id);
 
             if (meterEntity is null)
             {
                 return ResponseHelper.NotFound<ResponseMeterDto>("Registro no Encontrado");
+            }
+
+            if(bills is not null)
+            {
+                return ResponseHelper.BadRequest<ResponseMeterDto>("No se puede Eliminar un Contador que ya tenga facturas emitidas");
             }
 
             _context.Meters.Remove(meterEntity);

@@ -10,6 +10,8 @@ namespace Electric.API.Dtos.Bills
     {
         public MeterDto? MeterInfo { get; set; }
 
+        public bool MeterInfoFound { get; set; } = true;
+
         public int Consumption { get; set; }
     }
 }

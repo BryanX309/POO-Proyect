@@ -91,7 +91,7 @@ namespace Electric.API.Services.Bills
             if(error != null)
                 return error;
 
-            return ResponseHelper.OK<ResponseBillDto>("Factura Emitida Correctamente", new ResponseBillDto
+            return ResponseHelper.Created<ResponseBillDto>("Factura Emitida Correctamente", new ResponseBillDto
             {
                 Id = newBill.Id
             });

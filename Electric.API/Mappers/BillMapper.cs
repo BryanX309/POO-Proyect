@@ -53,6 +53,8 @@ namespace Electric.API.Mappers
 
                 if(MeterInfo is not null)
                     bill.MeterInfo = MeterMapper.EntityToOneDto(MeterInfo);
+                else
+                    bill.MeterInfoFound = false;
             }
 
             return BillsList;
